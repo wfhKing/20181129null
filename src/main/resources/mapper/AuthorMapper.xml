@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nf147.ssm.dao.AuthorMapper">
+  <resultMap id="BaseResultMap" type="com.nf147.ssm.entity.Author">
+    <id column="author_id" jdbcType="INTEGER" property="authorId" />
+    <result column="author_name" jdbcType="VARCHAR" property="authorName" />
+    <result column="author_phone" jdbcType="VARCHAR" property="authorPhone" />
+    <result column="author_address" jdbcType="VARCHAR" property="authorAddress" />
+
+    <collection property="posts" ofType="com.nf147.ssm.entity.Post">
+      <id column="post_id" jdbcType="INTEGER" property="postId"/>
+      <result column="author_id" jdbcType="INTEGER" property="authorId"/>
+      <result column="post_tite" jdbcType="VARCHAR" property="postTite"/>
+      <result column="post_content" jdbcType="VARCHAR" property="postContent"/>
+      <result column="post_date" jdbcType="TIMESTAMP" property="postDate"/>
+    </collection>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+
+    delete from author
+    where author_id = #{authorId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nf147.ssm.entity.Author">
+
+    <selectKey keyProperty="authorId" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into author (author_id, author_name, author_phone, 
+      author_address)
+    values (#{authorId,jdbcType=INTEGER}, #{authorName,jdbcType=VARCHAR}, #{authorPhone,jdbcType=VARCHAR}, 
+      #{authorAddress,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nf147.ssm.entity.Author">
+
+    update author
+    set author_name = #{authorName,jdbcType=VARCHAR},
+      author_phone = #{authorPhone,jdbcType=VARCHAR},
+      author_address = #{authorAddress,jdbcType=VARCHAR}
+    where author_id = #{authorId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select author_id, author_name, author_phone, author_address
+    from author
+    where author_id = #{authorId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select post_id, p.author_id, post_tite, post_content, post_date,author_name,
+        author_phone,author_address from post p inner join author a on p.author_id=a.author_id
+  </select>
+</mapper>

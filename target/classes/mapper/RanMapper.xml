@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nf147.ssm.dao.RanMapper">
+  <resultMap id="BaseResultMap" type="com.nf147.ssm.entity.Ran">
+    <result column="rid" jdbcType="INTEGER" property="rid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <insert id="insert" parameterType="com.nf147.ssm.entity.Ran">
+    <selectKey keyProperty="rid" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ran (rid, name)
+    values (#{rid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select rid, name
+    from ran
+  </select>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nf147.ssm.dao.PostMapper">
+    <resultMap id="BaseResultMap" type="com.nf147.ssm.entity.Post">
+
+        <id column="post_id" jdbcType="INTEGER" property="postId"/>
+        <result column="author_id" jdbcType="INTEGER" property="authorId"/>
+        <result column="post_tite" jdbcType="VARCHAR" property="postTite"/>
+        <result column="post_content" jdbcType="VARCHAR" property="postContent"/>
+        <result column="post_date" jdbcType="TIMESTAMP" property="postDate"/>
+
+        <collection property="author" ofType="com.nf147.ssm.entity.Author">
+            <id column="author_id" jdbcType="INTEGER" property="authorId"/>
+            <result column="author_name" jdbcType="VARCHAR" property="authorName"/>
+            <result column="author_phone" jdbcType="VARCHAR" property="authorPhone"/>
+            <result column="author_address" jdbcType="VARCHAR" property="authorAddress"/>
+        </collection>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+
+    delete from post
+    where post_id = #{postId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.nf147.ssm.entity.Post">
+
+        <selectKey keyProperty="postId" order="BEFORE" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into post (post_id, author_id, post_tite,
+        post_content, post_date)
+        values (#{postId,jdbcType=INTEGER}, #{authorId,jdbcType=INTEGER}, #{postTite,jdbcType=VARCHAR},
+        #{postContent,jdbcType=VARCHAR}, #{postDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.nf147.ssm.entity.Post">
+        update post
+        set author_id = #{authorId,jdbcType=INTEGER},
+        post_tite = #{postTite,jdbcType=VARCHAR},
+        post_content = #{postContent,jdbcType=VARCHAR},
+        post_date = #{postDate,jdbcType=TIMESTAMP}
+        where post_id = #{postId,jdbcType=INTEGER}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+        select post_id, author_id, post_tite, post_content, post_date
+        from post
+        where post_id = #{postId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select post_id, p.author_id, post_tite, post_content, post_date,author_name,
+        author_phone,author_address from post p inner join author a on p.author_id=a.author_id
+
+    </select>
+</mapper>
